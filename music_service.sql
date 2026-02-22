@@ -175,3 +175,39 @@ WHERE artist_name NOT LIKE '% %';
 SELECT title_track AS "Трек с 'мой'/'my'"
 FROM Track
 WHERE LOWER(title_track) LIKE '%мой%' OR LOWER(title_track) LIKE '%my%';
+
+SELECT g.name AS "Жанр", COUNT(ag.artist_id) AS "Исполнителей"
+FROM Genres g
+LEFT JOIN Artist_Genres ag ON g.genres_id = ag.genre_id
+GROUP BY g.genres_id, g.name
+ORDER BY COUNT(ag.artist_id) DESC;
+
+SELECT a.release_year AS "Год", COUNT(t.track_id) AS "Треков"
+FROM Track t
+JOIN Albums a ON t.album_id = a.albums_id
+WHERE a.release_year BETWEEN 2019 AND 2020
+GROUP BY a.release_year;
+
+SELECT a.title_albums AS "Альбом", 
+       COUNT(t.track_id) AS "Треков",
+       ROUND(AVG(t.duration_track), 2) AS "Средняя длит. (сек)"
+FROM Albums a
+LEFT JOIN Track t ON a.albums_id = t.album_id
+GROUP BY a.albums_id, a.title_albums;
+
+SELECT ar.artist_name AS "Исполнитель"
+FROM Artist ar
+WHERE ar.artist_id NOT IN (
+    SELECT DISTINCT aa.artist_id
+    FROM Artist_Albums aa
+    JOIN Albums a ON aa.albums_id = a.albums_id
+    WHERE a.release_year = 2020
+);
+
+SELECT DISTINCT c.collection_name AS "Сборник", c.release_year AS "Год"
+FROM Collection c
+JOIN Collection_track ct ON c.collection_id = ct.collection_id
+JOIN Track t ON ct.track_id = t.track_id
+JOIN Artist_Albums aa ON t.album_id = aa.albums_id
+JOIN Artist a ON aa.artist_id = a.artist_id
+WHERE a.artist_name = '25/17';
