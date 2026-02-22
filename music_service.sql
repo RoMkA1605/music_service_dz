@@ -154,3 +154,24 @@ INSERT INTO Collection_track (collection_id, track_id) VALUES
 (5, 6), -- Бродяга (Гарик Сукачев)
 (5, 9), -- Небо (Павел Пламенев)
 (5, 10); -- Наизнанку (Павел Пламенев)
+
+SELECT title_track AS "Самый длительный трек", duration_track AS "Длительность (сек)"
+FROM Track
+WHERE duration_track = (SELECT MAX(duration_track) FROM Track);
+
+SELECT title_track AS "Трек ≥ 3.5 мин", 
+       CONCAT(FLOOR(duration_track/60), ':', LPAD((duration_track % 60)::text, 2, '0')) AS "Длительность"
+FROM Track
+WHERE duration_track >= 210;
+
+SELECT collection_name AS "Сборник", release_year AS "Год"
+FROM Collection
+WHERE release_year BETWEEN 2018 AND 2020;
+
+SELECT artist_name AS "Исполнитель (одно слово)"
+FROM Artist
+WHERE artist_name NOT LIKE '% %';
+
+SELECT title_track AS "Трек с 'мой'/'my'"
+FROM Track
+WHERE LOWER(title_track) LIKE '%мой%' OR LOWER(title_track) LIKE '%my%';
