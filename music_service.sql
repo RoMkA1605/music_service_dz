@@ -172,9 +172,13 @@ SELECT artist_name AS "Исполнитель (одно слово)"
 FROM Artist
 WHERE artist_name NOT LIKE '% %';
 
-SELECT title_track AS "Трек с 'мой'/'my'"
-FROM Track
-WHERE LOWER(title_track) LIKE '%мой%' OR LOWER(title_track) LIKE '%my%';
+-- Находит песню "Кто убил Марка"
+SELECT title_track FROM Track 
+WHERE 
+    title_track ILIKE 'кто %'
+    OR title_track ILIKE '% кто'
+    OR title_track ILIKE '% кто %'
+    OR title_track ILIKE 'кто'; 
 
 SELECT g.name AS "Жанр", COUNT(ag.artist_id) AS "Исполнителей"
 FROM Genres g
@@ -182,11 +186,10 @@ LEFT JOIN Artist_Genres ag ON g.genres_id = ag.genre_id
 GROUP BY g.genres_id, g.name
 ORDER BY COUNT(ag.artist_id) DESC;
 
-SELECT a.release_year AS "Год", COUNT(t.track_id) AS "Треков"
-FROM Track t
+-- Находит 4 трека, которые привязаны к альбомам 2019 г и 2020 г
+SELECT COUNT(t.track_id) FROM Track t 
 JOIN Albums a ON t.album_id = a.albums_id
-WHERE a.release_year BETWEEN 2019 AND 2020
-GROUP BY a.release_year;
+WHERE a.release_year BETWEEN 2019 AND 2020;
 
 SELECT a.title_albums AS "Альбом", 
        COUNT(t.track_id) AS "Треков",
@@ -211,3 +214,4 @@ JOIN Track t ON ct.track_id = t.track_id
 JOIN Artist_Albums aa ON t.album_id = aa.albums_id
 JOIN Artist a ON aa.artist_id = a.artist_id
 WHERE a.artist_name = '25/17';
+
